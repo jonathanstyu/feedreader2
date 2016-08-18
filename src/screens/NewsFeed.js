@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, ListView} from 'react-native';
+import {StyleSheet, Text, View, ListView, TouchableHighlight} from 'react-native';
 
 import NewsFeedCell from './NewsFeedCell';
+import NewsItem from '../models/NewsItem';
+import FeedItemScreen from './FeedItemScreen'
 
 export default class NewsFeed extends Component {
   constructor(props) {
@@ -9,17 +11,16 @@ export default class NewsFeed extends Component {
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
     })
+    // In constructor, you need to explicitly bind a function, if you want to pass it to any react component, as sometimes it doesn't bind implicitly.
+    this._renderRow = this._renderRow.bind(this);
+    this._pressRow = this._pressRow.bind(this);
     this.state = {
-      dataSource: ds.cloneWithRows([
-        'Row 1',
-        "row 2",
-        "row 3"
-      ])
+      newsItems: NewsItem.generateDummyData(),
+      dataSource: ds.cloneWithRows(NewsItem.generateDummyData())
     }
   }
 
   render() {
-    console.log(this.state.dataSource);
     return (
       <ListView
         style={styles.listView}
@@ -30,10 +31,25 @@ export default class NewsFeed extends Component {
     )
   }
 
-  _renderRow(rowData: string, sectionID: number, rowID: number) {
+  _renderRow(rowData: NewsItem, sectionID: number, rowID: number) {
     return (
-      <NewsFeedCell rowData={rowData} />
+      <TouchableHighlight onPress={() => {
+        this._pressRow(sectionID, rowID);
+        }}>
+        <View>
+          <NewsFeedCell rowData={rowData} />
+        </View>
+      </TouchableHighlight>
     )
+  }
+
+  _pressRow(sectionID: number, rowID: number) {
+    var item = this.state.newsItems[rowID];
+    this.props.navigator.push({
+      component: FeedItemScreen,
+      title: item.title,
+      passProps: {item: item}
+    })
   }
 
   _renderSeparator(sectionID: number, rowID: number) {
@@ -48,7 +64,8 @@ export default class NewsFeed extends Component {
 
 const styles = StyleSheet.create({
   listView: {
-    backgroundColor: '#172A3A',
+    // backgroundColor: '#172A3A',
+    backgroundColor: "white"
   },
   separator: {
     backgroundColor: 'black',
