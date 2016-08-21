@@ -9,7 +9,8 @@
     "eslint-plugin-react": "^6.1.1",
     "eslint-plugin-react-native": "^2.0.0",
     "react": "15.2.1",
-    "react-native": "0.31.0"
+    "react-native": "0.31.0",
+    "xmldom": "^0.1.22"
   },
   "devDependencies": {
     "eslint": "^3.3.1",

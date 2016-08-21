@@ -19,7 +19,15 @@ export default class App extends Component {
   }
 
   _handleLeftButtonPress() {
-
+    fetch("http://stratechery.com/feed/")
+      .then((response) => {
+        var DOMParser = require('xmldom').DOMParser;
+        var doc = new DOMParser().parseFromString(response);
+        console.log(doc);
+      })
+      .catch((error) => {
+        console.log("error is: " + error);
+      })
   }
 }
 
