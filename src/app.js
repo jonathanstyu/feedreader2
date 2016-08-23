@@ -1,38 +1,62 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, NavigatorIOS} from 'react-native'
+import {StyleSheet, Text, Navigator, TouchableHighlight} from 'react-native'
 
 import NewsFeed from './screens/NewsFeed';
+import FeedItemScreen from './screens/FeedItemScreen';
+import routeMapper from './models/navBarRouteMapper';
+import fetchAndParse from './actions/fetch';
 
 export default class App extends Component {
+  _renderScene(route, navigator) {
+    var ROUTES = {
+      feed: NewsFeed,
+      feedItemScreen: FeedItemScreen
+    }
+    var Component = ROUTES[route.component];
+    return (
+      <Component
+        navigator={navigator}
+        props={route.passProps}
+        />
+    )
+  }
+
   render() {
     return (
-      <NavigatorIOS
+      <Navigator
         style={styles.navigator}
+        renderScene={this._renderScene}
         initialRoute={{
-          component: NewsFeed,
-          title: "Feed",
-          leftButtonTitle: "Subs",
-          onLeftButtonPress: () => this._handleLeftButtonPress(),
+          title: 'feed',
+          index: 0,
+          component: 'feed',
+          rightButton: 'Download',
+          rightButtonCallback: () => {
+            this._handleLeftButtonPress()
+          }
         }}
+        navigationBar={
+          <Navigator.NavigationBar
+            routeMapper={routeMapper}
+            style={styles.navigationBar}
+            />
+        }
         />
     )
   }
 
   _handleLeftButtonPress() {
-    fetch("http://stratechery.com/feed/")
-      .then((response) => {
-        var DOMParser = require('xmldom').DOMParser;
-        var doc = new DOMParser().parseFromString(response);
-        console.log(doc);
-      })
-      .catch((error) => {
-        console.log("error is: " + error);
-      })
+    fetchAndParse("http://stratechery.com/feed/");
   }
 }
 
 const styles = StyleSheet.create({
   navigator: {
     flex: 1
+  },
+  navigationBar: {
+    backgroundColor: 'white',
+    height: 50,
+    borderBottomWidth: StyleSheet.hairlineWidth
   }
-});
+})

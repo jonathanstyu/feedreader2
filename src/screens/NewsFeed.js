@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, ListView, TouchableHighlight} from 'react-native
 
 import NewsFeedCell from './NewsFeedCell';
 import NewsItem from '../models/NewsItem';
-import FeedItemScreen from './FeedItemScreen'
+import FeedItemScreen from './FeedItemScreen';
 
 export default class NewsFeed extends Component {
   constructor(props) {
@@ -46,9 +46,13 @@ export default class NewsFeed extends Component {
   _pressRow(sectionID: number, rowID: number) {
     var item = this.state.newsItems[rowID];
     this.props.navigator.push({
-      component: FeedItemScreen,
       title: item.title,
-      passProps: {item: item}
+      passProps: {item: item},
+      component: 'feedItemScreen',
+      leftButton: 'Back',
+      leftButtonCallback: () => {
+        this.props.navigator.pop()
+      }
     })
   }
 
@@ -64,7 +68,7 @@ export default class NewsFeed extends Component {
 
 const styles = StyleSheet.create({
   listView: {
-    // backgroundColor: '#172A3A',
+    paddingTop: 50,
     backgroundColor: "white"
   },
   separator: {

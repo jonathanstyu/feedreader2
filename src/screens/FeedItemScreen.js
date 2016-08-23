@@ -8,7 +8,7 @@ export default class FeedItemScreen extends Component {
   }
 
   render() {
-    var item = this.props.item;
+    var item = this.props.props.item;
     return (
       <View style={styles.container}>
         <ScrollView
@@ -31,6 +31,7 @@ export default class FeedItemScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 50,
     flexDirection: "column",
     justifyContent: 'flex-end',
     alignItems: 'stretch',
